@@ -1,0 +1,5 @@
+openjdk-17-crac (17.0.12+6-1) oracular; urgency=medium
+
+  * Initial release. (Closes: #XXXXXX)
+
+ -- Pushkar Kulkarni <pushkar.kulkarni@canonical.com>  Wed, 10 Jul 2024 10:36:59 +0530

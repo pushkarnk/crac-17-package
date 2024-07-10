@@ -1,0 +1,23 @@
+Description: Misalign address in the test rather than structure
+ mk68-support.diff aligned metaspace structures by 4 bytes breaking the test.
+ Add 1 to address type rather than aligned structure to produce misaligned pointer.
+--- a/test/hotspot/gtest/metaspace/test_is_metaspace_obj.cpp
++++ b/test/hotspot/gtest/metaspace/test_is_metaspace_obj.cpp
+@@ -61,7 +61,7 @@
+     ASSERT_TRUE(MetaspaceObj::is_valid(p));
+ 
+     // A misaligned object shall not be recognized
+-    const MetaspaceObj* p_misaligned = (MetaspaceObj*)((address)p) + 1;
++    const MetaspaceObj* p_misaligned = (MetaspaceObj*)((address)p + 1);
+     ASSERT_FALSE(MetaspaceObj::is_valid(p_misaligned));
+ 
+     // Test VirtualSpaceList::contains
+@@ -72,7 +72,7 @@
+     ASSERT_TRUE(vslist->contains((MetaWord*)p));
+ 
+     // A misaligned pointer shall still be recognized by list::contains
+-    ASSERT_TRUE(vslist->contains((MetaWord*)((address)p) + 1));
++    ASSERT_TRUE(vslist->contains((MetaWord*)((address)p + 1)));
+ 
+     // Now for some bogus values
+     ASSERT_FALSE(MetaspaceObj::is_valid((MetaspaceObj*)NULL));

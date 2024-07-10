@@ -1,0 +1,108 @@
+Description: 8314491: Linux: jexec launched via PATH fails to find java
+  jexec uses argv[0] parameter to find its own location.
+  argv[0] is populated with the command value causing a failure to locate java
+  when jexec is found in the PATH (in this case argv[0] contains just 'jexec')
+Author: Vladimir Petko <vladimir.petko@canonical.com>
+Bug: https://github.com/openjdk/jdk/pull/15343
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1029342
+Applied-Upstream: dab1c213fd2760686a7bf3fc8838f4a21056a954
+Last-Update: 2023-09-11
+diff --git a/src/java.base/unix/native/launcher/jexec.c b/src/java.base/unix/native/launcher/jexec.c
+index bd6458c67a1..0d3f08ec4cc 100644
+--- a/src/java.base/unix/native/launcher/jexec.c
++++ b/src/java.base/unix/native/launcher/jexec.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 1999, 2017, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 1999, 2023, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -168,7 +168,16 @@ int main(int argc, const char * argv[]) {
+
+     /* Get the path to the java binary, which is in a known position relative
+      * to our current position, which is in argv[0]. */
+-    if (getJavaPath(argv[argi++], java, RELATIVE_DEPTH) != 0) {
++    int error = getJavaPath(argv[argi++], java, RELATIVE_DEPTH);
++#ifdef __linux__
++    /* Try to read the symbolic link to the current binary
++     * if the java path can not be resolved from argv[0]. */
++    if (error != 0) {
++        error = getJavaPath("/proc/self/exe", java, RELATIVE_DEPTH);
++    }
++#endif
++
++    if (error != 0) {
+         errorExit(errno, MISSING_JAVA_MSG);
+     }
+     alen = (argc + 2) * (sizeof (const char *));
+diff --git a/test/jdk/tools/launcher/Jexec.java b/test/jdk/tools/launcher/Jexec.java
+index f2c9cfc37e8..1846a504b53 100644
+--- a/test/jdk/tools/launcher/Jexec.java
++++ b/test/jdk/tools/launcher/Jexec.java
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2017, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 2017, 2023, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -23,14 +23,16 @@
+
+ /*
+  * @test
+- * @bug 8175000
++ * @bug 8175000 8314491
+  * @summary test jexec
++ * @requires os.family == "linux"
+  * @build TestHelper
+  * @run main Jexec
+  */
+
+ import java.io.File;
+ import java.io.IOException;
++import java.nio.file.Path;
+
+ public class Jexec extends TestHelper {
+     private final File testJar;
+@@ -54,20 +56,12 @@ public class Jexec extends TestHelper {
+     }
+
+     public static void main(String... args) throws Exception {
+-        // linux is the only supported platform, give the others a pass
+-        if (!isLinux) {
+-            System.err.println("Warning: unsupported platform test passes vacuously");
+-            return;
+-        }
+-        // ok to run the test now
+         Jexec t = new Jexec();
+         t.run(null);
+     }
+
+-    @Test
+-    void jexec() throws Exception {
+-        TestResult tr = doExec(jexecCmd.getAbsolutePath(),
+-                testJar.getAbsolutePath(), message);
++    private void runTest(String... cmds) throws Exception {
++        TestResult tr = doExec(cmds);
+         if (!tr.isOK()) {
+             System.err.println(tr);
+             throw new Exception("incorrect exit value");
+@@ -77,4 +71,17 @@ void jexec() throws Exception {
+             throw new Exception("expected message \'" + message + "\' not found");
+         }
+     }
++
++    @Test
++    void jexec() throws Exception {
++        runTest(jexecCmd.getAbsolutePath(),
++                testJar.getAbsolutePath(), message);
++    }
++
++    @Test
++    void jexecInPath() throws Exception {
++        Path jexec = Path.of(jexecCmd.getAbsolutePath());
++        runTest("/bin/sh", "-c",
++                String.format("PATH=%s ; jexec %s '%s'",jexec.getParent(), testJar.getAbsolutePath(), message));
++    }
+ }

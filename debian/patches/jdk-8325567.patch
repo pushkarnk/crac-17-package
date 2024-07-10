@@ -1,0 +1,34 @@
+Origin: commit,262747094670b00ac63463a059074afa9b81d8a4
+From: Elif Aslan <elifasln@amazon.com>
+Date: Fri, 8 Mar 2024 22:09:18 +0000
+Subject: [PATCH] 8325567: jspawnhelper without args fails with segfault
+Bug: https://bugs.openjdk.org/browse/JDK-8325567
+Co-authored-by: Vladimir Petko <vpetko@openjdk.org>
+Reviewed-by: eastigeevich, rriggs, shade, vpetko
+---
+ .../unix/native/jspawnhelper/jspawnhelper.c   |  5 ++
+ .../ProcessBuilder/JspawnhelperWarnings.java  | 57 +++++++++++++++++++
+ 2 files changed, 62 insertions(+)
+ create mode 100644 test/jdk/java/lang/ProcessBuilder/JspawnhelperWarnings.java
+
+--- a/src/java.base/unix/native/jspawnhelper/jspawnhelper.c
++++ b/src/java.base/unix/native/jspawnhelper/jspawnhelper.c
+@@ -62,6 +62,7 @@
+     fprintf(stdout, "only be run as the result of a call to\n");
+     fprintf(stdout, "ProcessBuilder.start() or Runtime.exec() in a java ");
+     fprintf(stdout, "application\n");
++    fflush(stdout);
+     _exit(1);
+ }
+
+@@ -142,6 +143,10 @@
+     /* argv[1] contains the fd number to read all the child info */
+     int r, fdinr, fdinw, fdout;
+
++    if (argc != 2) {
++        shutItDown();
++    }
++
+ #ifdef DEBUG
+     jtregSimulateCrash(0, 4);
+ #endif

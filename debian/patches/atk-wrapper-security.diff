@@ -1,0 +1,10 @@
+--- a/src/java.base/share/conf/security/java.security
++++ b/src/java.base/share/conf/security/java.security
+@@ -310,6 +310,7 @@
+ #
+ package.access=sun.misc.,\
+                sun.reflect.,\
++               org.GNOME.Accessibility.,\
+ 
+ #
+ # List of comma-separated packages that start with or equal this string

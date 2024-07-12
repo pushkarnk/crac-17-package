@@ -21,7 +21,7 @@ endif
 
 vafilt = $(subst $(2)=,,$(filter $(2)=%,$(1)))
 
-DEB_BUILD_OPTIONS       := nodocs noaltzero nocheck nobootcycle
+DEB_BUILD_OPTIONS       := nobootcycle
 DPKG_VARS		:= $(shell dpkg-architecture)
 DEB_HOST_GNU_TYPE	?= $(call vafilt,$(DPKG_VARS),DEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE	?= $(call vafilt,$(DPKG_VARS),DEB_BUILD_GNU_TYPE)
@@ -83,8 +83,8 @@ else
   is_default = yes
 endif
 
+is_upstream_release = 
 is_upstream_release = yes
-is_upstream_release =
 
 srcdir		= .
 builddir	= build
@@ -93,7 +93,7 @@ zbuilddir	= build-zero
 VENDOR		= openjdk
 Vendor		= OpenJDK
 TOP		= usr/lib/jvm
-origin		= openjdk
+origin		= openjdk-crac
 basename	= openjdk-$(shortver)-crac
 ifneq (,$(filter $(DEB_HOST_ARCH), $(hotspot_archs)))
   priority	= $(if $(filter yes, $(is_default)),1711,1709)
@@ -1308,8 +1308,8 @@ install: packaging-files
 	mkdir -p $(d)/$(basedir)
 	cp -a $(builddir)/$(sdkimg)/* $(d)/$(basedir)/
 
-        : # copy crac-criu library to jdk/lib
-        cp /usr/sbin/criu $(d)/$(basedir)/lib/.
+	: # copy crac-criu library to jdk/lib
+	cp /usr/sbin/criu $(d)/$(basedir)/lib/.
 
 	chmod -R u+w $(d)
 
@@ -1843,6 +1843,7 @@ endif
 
 nodocs = $(if $(findstring nodoc, $(DEB_BUILD_OPTIONS)),-N$(p_doc))
 nojrez = $(if $(filter zero, $(alternate_vms)),,-N$(p_jrez))
+nojrez =
 
 # Build architecture independant packages
 binary-indep: build-indep install

@@ -1,0 +1,16 @@
+Description: fix a compilation failure
+  This issue has been fixed upstream and hence the
+  patch need not be forwarded.
+Author: Pushkar Kulkarni <pushkar.kulkarni@canonical.com>
+Forwarded: not-needed
+
+--- a/src/hotspot/share/runtime/thread.cpp
++++ b/src/hotspot/share/runtime/thread.cpp
+@@ -75,6 +75,7 @@
+ #include "prims/jvmtiExport.hpp"
+ #include "prims/jvmtiThreadState.hpp"
+ #include "runtime/arguments.hpp"
++#include "runtime/crac.hpp"
+ #include "runtime/atomic.hpp"
+ #include "runtime/biasedLocking.hpp"
+ #include "runtime/fieldDescriptor.inline.hpp"

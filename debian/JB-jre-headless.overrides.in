@@ -9,3 +9,6 @@
 
 # Just an empty directory
 @basename@-jre-headless binary: debug-package-should-be-named-dbg
+
+# Seems like a false flag
+@basename@-jre-headless binary: arch-dependent-file-not-in-arch-specific-directory

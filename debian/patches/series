@@ -43,3 +43,4 @@ jdk-8295111.patch
 jdk-8334502-proposed.patch
 jdk-8334895-proposed.patch
 jdk-8325567.patch
+fix-upstream-compilation-failure.patch

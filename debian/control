@@ -1,8 +1,7 @@
 Source: openjdk-17-crac
 Section: java
 Priority: optional
-Maintainer: OpenJDK Team <openjdk-17@packages.debian.org>
-Uploaders: Matthias Klose <doko@ubuntu.com>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 11),
   m4, lsb-release, zip, unzip,
   sharutils, gawk, cpio, pkg-config, procps, wdiff, fastjar (>= 2:0.96-0ubuntu2),
@@ -20,33 +19,26 @@ Build-Depends: debhelper (>= 11),
 Build-Depends-Indep: graphviz, pandoc,
 Rules-Requires-Root: no
 Standards-Version: 4.6.2
-Homepage: https://openjdk.java.net/
-Vcs-Browser: https://salsa.debian.org/openjdk-team/openjdk/tree/openjdk-17
-Vcs-Git: https://salsa.debian.org/openjdk-team/openjdk.git -b openjdk-17
+Homepage: https://openjdk.org/projects/crac/ 
+Vcs-Browser: https://github.com/canonical/openjdk-21-crac/tree/crac 
+Vcs-Git: https://github.com/canonical/openjdk-21-crac.git -b crac 
 
-Package: openjdk-17-jdk-headless
-Architecture: alpha amd64 armel armhf arm64 i386 ia64 loong64 mips mipsel mips64 mips64el powerpc ppc64 ppc64el m68k riscv64 sh4 sparc sparc64 s390x x32
+
+Package: openjdk-17-crac-jdk-headless
+Architecture: amd64
 Multi-Arch: same
 Pre-Depends: ${dpkg:Depends}
-Depends: openjdk-17-jre-headless (= ${binary:Version}),
+Depends: openjdk-17-crac-jre-headless (= ${binary:Version}),
   ${shlibs:Depends}, ${misc:Depends}
-Suggests: openjdk-17-demo, openjdk-17-source
-Provides: java-sdk-headless (= ${vm:Version}), java2-sdk-headless,
-  java5-sdk-headless, java6-sdk-headless,
-  java7-sdk-headless, java8-sdk-headless,
-  java9-sdk-headless, java10-sdk-headless,
-  java11-sdk-headless, java12-sdk-headless,
-  java13-sdk-headless, java14-sdk-headless, java15-sdk-headless,
-  java16-sdk-headless, java17-sdk-headless,
-  java-compiler
-Breaks: openjdk-17-jre-headless (<< 17~10)
-Replaces: openjdk-17-jre-headless (<< 17~10)
-Description: OpenJDK Development Kit (JDK) (headless)
+Suggests: openjdk-17-crac-demo, openjdk-17-crac-source
+Description: OpenJDK Development Kit (JDK) (headless) with CRaC support
  OpenJDK is a development environment for building applications,
- applets, and components using the Java programming language.
+ applets, and components using the Java programming language. This JDK
+ is further specialized to support the Coordinated Restore at Checkpoint
+ capability.
 
-Package: openjdk-17-jre-headless
-Architecture: alpha amd64 armel armhf arm64 i386 ia64 loong64 mips mipsel mips64 mips64el powerpc ppc64 ppc64el m68k riscv64 sh4 sparc sparc64 s390x x32
+Package: openjdk-17-crac-jre-headless
+Architecture: amd64
 Multi-Arch: same
 Pre-Depends: ${dpkg:Depends}
 Depends: ${jredefault:Depends}, ${cacert:Depends},
@@ -58,74 +50,54 @@ Recommends: ${dlopenhl:Recommends},
 Suggests: libnss-mdns,
   fonts-dejavu-extra,
   fonts-ipafont-gothic, fonts-ipafont-mincho, fonts-wqy-microhei | fonts-wqy-zenhei, fonts-indic,
-Provides: java-runtime-headless (= ${vm:Version}), java2-runtime-headless,
-  java5-runtime-headless, java6-runtime-headless,
-  java7-runtime-headless, java8-runtime-headless,
-  java9-runtime-headless, java10-runtime-headless,
-  java11-runtime-headless, java12-runtime-headless,
-  java13-runtime-headless, java14-runtime-headless, java15-runtime-headless,
-  java16-runtime-headless, java17-runtime-headless,
-  ${defaultvm:Provides}, ${jvm:Provides}
-Breaks: ${jrehl:Breaks}
-Conflicts: oracle-java11-installer, openjdk-11-jdk-headless (<< 11~18-2)
-Replaces: openjdk-11-jdk-headless (<< 11~18-2)
-Description: OpenJDK Java runtime, using ${vm:Name} (headless)
+Description: OpenJDK Java runtime with CRaC, using ${vm:Name} (headless)
  Minimal Java runtime - needed for executing non GUI Java programs,
- using ${vm:Name}.
+ using ${vm:Name}. This package also provides the "Coordinated Restore
+ at Checkpoint" capability. 
 
-Package: openjdk-17-jdk
-Architecture: alpha amd64 armel armhf arm64 i386 ia64 loong64 mips mipsel mips64 mips64el powerpc ppc64 ppc64el m68k riscv64 sh4 sparc sparc64 s390x x32
+Package: openjdk-17-crac-jdk
+Architecture: amd64
 Multi-Arch: same
 Pre-Depends: ${dpkg:Depends}
-Depends: openjdk-17-jre (= ${binary:Version}),
-  openjdk-17-jdk-headless (= ${binary:Version}),
+Depends: openjdk-17-crac-jre (= ${binary:Version}),
+  openjdk-17-crac-jdk-headless (= ${binary:Version}),
   ${shlibs:Depends}, ${misc:Depends}
 Recommends: libxt-dev
-Suggests: openjdk-17-demo, openjdk-17-source, visualvm
-Provides: java-sdk (= ${vm:Version}), java2-sdk, java5-sdk, java6-sdk,
-  java7-sdk, java8-sdk, java9-sdk, java10-sdk, java11-sdk,
-  java12-sdk, java13-sdk, java14-sdk, java15-sdk, java16-sdk, java17-sdk,
-  java-compiler
+Suggests: openjdk-17-crac-demo, openjdk-17-crac-source, visualvm
 Description: OpenJDK Development Kit (JDK)
  OpenJDK is a development environment for building applications,
  applets, and components using the Java programming language.
+ This package also provides the "Coordinated Restore at Checkpoint"
+ capability.
 
-Package: openjdk-17-jre
-Architecture: alpha amd64 armel armhf arm64 i386 ia64 loong64 mips mipsel mips64 mips64el powerpc ppc64 ppc64el m68k riscv64 sh4 sparc sparc64 s390x x32
+Package: openjdk-17-crac-jre
+Architecture: amd64
 Multi-Arch: same
 Pre-Depends: ${dpkg:Depends}
-Depends: openjdk-17-jre-headless (= ${binary:Version}),
+Depends: openjdk-17-crac-jre-headless (= ${binary:Version}),
   ${dlopenjre:Depends}, ${fontmanager:Depends}, ${jsound:Depends},
   ${shlibs:Depends}, ${misc:Depends}
 Recommends: ${dlopenjre:Recommends}, ${bridge:Recommends}, fonts-dejavu-extra
-Provides: java-runtime (= ${vm:Version}), java2-runtime,
-  java5-runtime, java6-runtime,
-  java7-runtime, java8-runtime,
-  java9-runtime, java10-runtime,
-  java11-runtime, java12-runtime,
-  java13-runtime, java14-runtime, java15-runtime,
-  java16-runtime, java17-runtime,
-Breaks: openjdk-17-jre-headless (<< 17~10)
-Replaces: openjdk-17-jre-headless (<< 17~10)
 Description: OpenJDK Java runtime, using ${vm:Name}
  Full Java runtime environment - needed for executing Java GUI and Webstart
- programs, using ${vm:Name}.
+ programs, using ${vm:Name}. This package also provides the "Coordinated Restore 
+ at Checkpoint" capability.
 
-Package: openjdk-17-demo
-Architecture: alpha amd64 armel armhf arm64 i386 ia64 loong64 mips mipsel mips64 mips64el powerpc ppc64 ppc64el m68k riscv64 sh4 sparc sparc64 s390x x32
+Package: openjdk-17-crac-demo
+Architecture: amd64
 Priority: optional
 Pre-Depends: ${dpkg:Depends}
-Depends: openjdk-17-jre (= ${binary:Version}),
+Depends: openjdk-17-crac-jre (= ${binary:Version}),
   ${shlibs:Depends}, ${misc:Depends}
 Description: Java runtime based on OpenJDK (demos and examples)
  OpenJDK Java runtime
 
-Package: openjdk-17-source
+Package: openjdk-17-crac-source
 Architecture: all
 Multi-Arch: foreign
 Priority: optional
 Pre-Depends: ${dpkg:Depends}
-Depends: openjdk-17-jdk (>= ${source:Version}),
+Depends: openjdk-17-crac-jdk (>= ${source:Version}),
   ${misc:Depends}
 Description: OpenJDK Development Kit (JDK) source files
  OpenJDK is a development environment for building applications,
@@ -134,7 +106,7 @@ Description: OpenJDK Development Kit (JDK) source files
  This package contains the Java programming language source files
  (src.zip) for all classes that make up the Java core API.
 
-Package: openjdk-17-doc
+Package: openjdk-17-crac-doc
 Section: doc
 Pre-Depends: ${dpkg:Depends}
 Architecture: all
@@ -144,23 +116,23 @@ Depends: ${misc:Depends},
   libjs-jquery,
   libjs-jquery-ui,
   libjs-jquery-ui-theme-base,
-Suggests: openjdk-17-jdk
+Suggests: openjdk-17-crac-jdk
 Description: OpenJDK Development Kit (JDK) documentation
  OpenJDK is a development environment for building applications,
  applets, and components using the Java programming language.
  .
  This package contains the API documentation.
 
-Package: openjdk-17-dbg
-Architecture: alpha amd64 armel armhf arm64 i386 ia64 loong64 mips mipsel mips64 mips64el powerpc ppc64 ppc64el m68k riscv64 sh4 sparc sparc64 s390x x32
+Package: openjdk-17-crac-dbg
+Architecture: amd64
 Multi-Arch: same
 Priority: optional
 Section: debug
 Pre-Depends: ${dpkg:Depends}
-Depends: openjdk-17-jre-headless (= ${binary:Version}),
+Depends: openjdk-17-crac-jre-headless (= ${binary:Version}),
    ${misc:Depends}
-Recommends: openjdk-17-jre (= ${binary:Version})
-Suggests: openjdk-17-jdk (= ${binary:Version})
+Recommends: openjdk-17-crac-jre (= ${binary:Version})
+Suggests: openjdk-17-crac-jdk (= ${binary:Version})
 Conflicts: ${dbg:Conflicts}
 Description: Java runtime based on OpenJDK (debugging symbols)
  OpenJDK is a development environment for building applications,
@@ -168,16 +140,17 @@ Description: Java runtime based on OpenJDK (debugging symbols)
  .
  This package contains the debugging symbols.
 
-Package: openjdk-17-jre-zero
-Architecture: amd64 i386 arm64 armhf ppc64 ppc64el riscv64 s390x
+Package: openjdk-17-crac-jre-zero
+Architecture: amd64
 Multi-Arch: same
 Priority: optional
 Pre-Depends: ${dpkg:Depends}
-Depends: openjdk-17-jre-headless (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends: openjdk-17-crac-jre-headless (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Provides: ${zerovm:Provides}
 Description: Alternative JVM for OpenJDK, using Zero
  The package provides an alternative runtime using the Zero VM. Built on
  architectures in addition to the Hotspot VM as a debugging aid for those
- architectures which don't have a Hotspot VM.
+ architectures which don't have a Hotspot VM. This packages also provides
+ the "Coordinated Restore at Checkpoint" capability.
  .
  The VM is started with the option `-zero'. See the README.Debian for details.

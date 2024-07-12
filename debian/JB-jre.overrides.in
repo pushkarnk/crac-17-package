@@ -4,3 +4,6 @@
 # LP: #2012326 - in order to print allocation locations,
 # the libraries need to retain symbols
 @basename@-jre binary: unstripped-binary-or-object
+
+# Seems like a false flag
+@basename@-jre binary: arch-dependent-file-not-in-arch-specific-directory
